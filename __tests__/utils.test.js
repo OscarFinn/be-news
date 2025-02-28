@@ -1,5 +1,6 @@
 const {
-  convertTimestampToDate
+  convertTimestampToDate, 
+  createLookupObject
 } = require("../db/seeds/utils");
 
 describe("convertTimestampToDate", () => {
@@ -38,3 +39,29 @@ describe("convertTimestampToDate", () => {
   });
 });
 
+describe("createLookupObject", () => {
+  test("does not mutate original data", () => {
+    const data = [{key: 'Jerry', value: 1}]
+     createLookupObject(data, 'key', 'value')
+     expect(data).toEqual([{key: 'Jerry', value: 1}])
+  });
+  test("A single element array returns the correct lookup table", () => {
+      const data = [{key: 'Jerry', value: 1}]
+     const result = createLookupObject(data, 'key', 'value')
+     expect(result).toEqual({Jerry:1})
+  })
+  test("an array of data objects returns the correct lookup table", () => {
+    const data = [
+      {key: 'Jerry', value: 1}, 
+      {key: 'Jorry', value: 2}, 
+      {key: 'Jirry', value:3}, 
+      {key: 'Jarry', value:4}];
+    const result = createLookupObject(data, 'key', 'value')
+    expect(result).toEqual({
+      Jerry:1,
+      Jorry:2,
+      Jirry:3,
+      Jarry:4
+    })
+  })
+})

@@ -1,3 +1,15 @@
-# NC News Seeding
+# NEWS BACKEND PROJECT
 
-- Instructions for this sprint can be found at https://l2c.northcoders.com/courses/be/seeding-nc-news
+## INITIAL SETUP
+
+Run the following after cloning:
+
+    npm install
+
+Create a .env.development file and add the line:
+
+    PGDATABASE = nc_news
+
+Create a .env.test file and add the line:
+
+    PGDATABASE = nc_news_test

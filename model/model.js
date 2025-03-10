@@ -14,8 +14,16 @@ exports.fetchTopics = () => {
 }
 
 exports.fetchArticles = () => {
-    return db.query(`SELECT * FROM articles`)
+    return db.query(`
+        SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COALESCE(number_of_comments,0) AS number_of_comments
+        FROM articles
+        LEFT JOIN (
+            SELECT COUNT(comment_id) AS number_of_comments, article_id
+            FROM comments
+            GROUP BY article_id) AS commentCount
+        ON commentCount.article_id = articles.article_id`)
         .then(({rows}) => {
+            //console.log(rows)
             return rows;
         })
 }

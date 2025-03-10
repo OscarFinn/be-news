@@ -36,7 +36,7 @@ describe("GET /api/topics", () => {
       .expect(200)
       .then(({body}) => {
         const topics = body.topics;
-        //console.log(topics, '<-- topics in test')
+        console.log(topics, '<-- topics in test')
         topics.forEach(topic => {
           expect(typeof topic.slug).toBe('string')
           expect(typeof topic.description).toBe('string');

@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const ctrl = require('./controller/controller')
+const errCtrl = require('./controller/errors.controller')
 
 app.use(express.json());
 

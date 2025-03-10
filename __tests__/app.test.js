@@ -108,6 +108,19 @@ describe("GET /api/articles", () => {
         expect(articles).toBeSortedBy('created_at',{descending: true})
       })
   })
+  test("404: articles table is not found if articles table does not exist", () => {
+    return db.query('DROP TABLE comments, articles, users, topics')
+      .then(() => {
+        return request(app)
+          .get("/api/articles")
+          .expect(404)
+          .then(({body}) => {
+            //console.log(body);
+            const msg = body.msg;
+            expect(msg).toBe("Table not found")
+      })
+    })
+  })
 })
 
 describe("GET /api/articles/:article_id", () => {

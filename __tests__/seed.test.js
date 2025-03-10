@@ -30,7 +30,7 @@ describe('seed', () => {
                     AND column_name = 'slug';`
         )
         .then(({ rows: [column] }) => {
-          console.log(column);
+          //console.log(column);
           expect(column.column_name).toBe('slug');
           expect(column.data_type).toBe('character varying');
         });
@@ -521,7 +521,7 @@ describe("tests to check common errors", () => {
         const foreignKeyRows = rows.filter((row) => {
           return row.constraint_type === "FOREIGN KEY";
         });
-        console.log(foreignKeyRows);
+        //console.log(foreignKeyRows);
         expect(foreignKeyRows.length).toBe(2);
 
         foreignKeyRows.forEach((row) => {

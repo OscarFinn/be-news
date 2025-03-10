@@ -81,6 +81,22 @@ describe("GET /api/articles/:article_id", () => {
         expect(article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700")
       })
   })
+  test("200: Article with a 0 offset in its timestamp returns correct created_at", () => {
+    return request(app)
+      .get('/api/articles/11')
+      .expect(200)
+      .then(({body}) => {
+        const article = body.article;
+        const date = new Date(1579126860000)
+
+        // console.log(article.created_at, '<--- created at with no changes')
+        // console.log(date, '<-- date with no changes')
+        // console.log(new Date(article.created_at).getTimezoneOffset(), '<--- created_at timezone offset')
+        // console.log(date.getTimezoneOffset(), '<--- timezone offset from test data')
+        expect(article.title).toBe("Am I a cat?")
+        expect(new Date(article.created_at).toString()).toBe(date.toString())
+      })
+  })
   test("404: responds with a not found message if the article id does not exist", () => {
     return request(app)
       .get('/api/articles/999')

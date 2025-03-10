@@ -49,9 +49,11 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       // if(article.title === 'UNCOVERED: catspiracy to bring down democracy') {
         //   console.log(fixedTimestamp.created_at, '<--- created at before entering db')
         // }
-      const offset = fixedTimestamp.created_at.getTimezoneOffset()
 
+      //get timezone offset and adjust date by this before adding to db
+      const offset = fixedTimestamp.created_at.getTimezoneOffset()
       const offsetFix = new Date(fixedTimestamp.created_at.getTime() - offset * 60000)
+      
       //console.log(fixedTimestamp.title);
       //console.log(fixedTimestamp.created_at.getTimezoneOffset(), '<---timezone offset in seed')
       

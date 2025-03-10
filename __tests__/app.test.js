@@ -210,4 +210,22 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(comments.length).toBe(0)
       })
   })
+  test("404: responds with an error message when trying to access comments of a nonexistent article", () => {
+    return request(app)
+      .get('/api/articles/999/comments')
+      .expect(404)
+      .then(({body}) => {
+        const msg = body.msg
+        expect(msg).toBe('Article not found')
+      })
+  })
+  test("200: comments are ordered by most recent first", () => {
+    return request(app)
+      .get('/api/articles/1/comments')
+      .expect(200)
+      .then(({body}) => {
+        const comments = body.comments
+        expect(comments).toBeSortedBy('created_at', {descending:true})
+      })
+  })
 })

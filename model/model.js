@@ -42,7 +42,7 @@ exports.fetchArticle = (id) => {
 }
 
 exports.fetchCommentsByArticle = (id) => {
-    return db.query(`SELECT * FROM comments WHERE article_id = $1`, [id])
+    return db.query(`SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC`, [id])
         .then(({rows}) => {
             //console.log(rows, '<--- comments for an article')
             return rows

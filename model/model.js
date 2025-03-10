@@ -21,7 +21,8 @@ exports.fetchArticles = () => {
             SELECT COUNT(comment_id) AS number_of_comments, article_id
             FROM comments
             GROUP BY article_id) AS commentCount
-        ON commentCount.article_id = articles.article_id`)
+        ON commentCount.article_id = articles.article_id
+        ORDER BY articles.created_at DESC`)
         .then(({rows}) => {
             //console.log(rows)
             return rows;

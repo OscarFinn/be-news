@@ -99,7 +99,15 @@ describe("GET /api/articles", () => {
         })
       })
   })
-
+  test("200: Array of articles is sorted in descending order using the creation date", () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles;
+        expect(articles).toBeSortedBy('created_at',{descending: true})
+      })
+  })
 })
 
 describe("GET /api/articles/:article_id", () => {

@@ -12,3 +12,15 @@ exports.fetchTopics = () => {
             return rows
         })
 }
+
+exports.fetchArticle = (id) => {
+    return db.query(`SELECT * FROM articles WHERE article_id = $1`,[id])
+        .then(({rows}) => {
+            //console.log(rows, '<--- article')
+            if(rows.length === 0) {
+                return Promise.reject({status:404, msg: 'Article not found'})
+            }
+            //console.log(rows, '<--- article in model')
+            return rows[0];
+        })
+}

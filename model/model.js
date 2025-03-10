@@ -7,5 +7,8 @@ exports.fetchApi = () => {
 
 exports.fetchTopics = () => {
     return db.query(`SELECT * FROM topics`)
-        .then(({rows}) => rows)
+        .then(({rows}) => {
+            //console.log(rows, '<--- topics in model')
+            return rows
+        })
 }

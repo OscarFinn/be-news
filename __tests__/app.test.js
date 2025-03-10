@@ -36,11 +36,23 @@ describe("GET /api/topics", () => {
       .expect(200)
       .then(({body}) => {
         const topics = body.topics;
-        console.log(topics, '<-- topics in test')
         topics.forEach(topic => {
           expect(typeof topic.slug).toBe('string')
           expect(typeof topic.description).toBe('string');
         });
       })
+  })
+  test("404: topics table is not found if topics table does not exist", () => {
+    return db.query('DROP TABLE comments, articles, users, topics')
+      .then(() => {
+        return request(app)
+          .get("/api/topics")
+          .expect(404)
+          .then(({body}) => {
+            //console.log(body);
+            const msg = body.msg;
+            expect(msg).toBe("Table not found")
+      })
+    })
   })
 })

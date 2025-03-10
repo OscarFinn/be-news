@@ -31,3 +31,11 @@ exports.getArticleById = (req,res,next) => {
         })
         .catch(next)
 }
+
+exports.getCommentsByArticle = (req,res,next) => {
+    const articleId = req.params.article_id
+    model.fetchCommentsByArticle(articleId)
+        .then((comments) => {
+            res.status(200).send({comments:comments})
+        })
+}

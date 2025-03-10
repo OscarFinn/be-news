@@ -74,12 +74,15 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       const articleTitle = comment.article_title;
       const articleId = articleLookup[articleTitle];
       const fixedTimestamp = convertTimestampToDate(comment)
+
+      const offset = fixedTimestamp.created_at.getTimezoneOffset()
+      const offsetFix = new Date(fixedTimestamp.created_at.getTime() - offset * 60000)
       return [
         articleId,
         comment.body,
         comment.votes,
         comment.author,
-        fixedTimestamp.created_at
+        offsetFix
       ]
     })
     

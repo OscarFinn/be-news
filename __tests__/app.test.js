@@ -181,3 +181,33 @@ describe("GET /api/articles/:article_id", () => {
       })
   })
 })
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: responds with an array of comments when passed a valid article", () => {
+    return request(app)
+      .get('/api/articles/1/comments')
+      .expect(200)
+      .then(({body}) => {
+        const comments = body.comments;
+        //console.log(comments)
+        expect(comments.length).toBe(11);
+        comments.forEach((comment) => {
+          expect(typeof comment.comment_id).toBe("number");
+          expect(typeof comment.article_id).toBe("number");
+          expect(typeof comment.body).toBe("string");
+          expect(typeof comment.votes).toBe("number");
+          expect(typeof comment.author).toBe("string");
+          expect(typeof comment.created_at).toBe("string");
+        })
+      })
+  })
+  test("200: responds with an empty array of comments when passed a valid article with no comments", () => {
+    return request(app)
+      .get('/api/articles/2/comments')
+      .expect(200)
+      .then(({body}) => {
+        const comments = body.comments;
+        expect(comments.length).toBe(0)
+      })
+  })
+})

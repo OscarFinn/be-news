@@ -13,6 +13,13 @@ exports.fetchTopics = () => {
         })
 }
 
+exports.fetchArticles = () => {
+    return db.query(`SELECT * FROM articles`)
+        .then(({rows}) => {
+            return rows;
+        })
+}
+ 
 exports.fetchArticle = (id) => {
     return db.query(`SELECT * FROM articles WHERE article_id = $1`,[id])
         .then(({rows}) => {

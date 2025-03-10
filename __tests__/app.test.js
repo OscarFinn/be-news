@@ -90,4 +90,13 @@ describe("GET /api/articles/:article_id", () => {
         expect(msg).toBe('Article not found')
       })
   })
+  test("400: responds with an invalid query message if passed id isnt a number", () => {
+    return request(app)
+      .get('/api/articles/invalid')
+      .expect(400)
+      .then(({body}) => {
+        const msg = body.msg;
+        expect(msg).toBe('Bad request >:(')
+      })
+  })
 })

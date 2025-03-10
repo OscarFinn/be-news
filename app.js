@@ -13,6 +13,8 @@ app.get("/api/articles", ctrl.getArticles)
 
 app.get("/api/articles/:article_id", ctrl.getArticleById)
 
+app.get("/api/articles/:article_id/comments", ctrl.getCommentsByArticle)
+
 app.use(errCtrl.handleCustomErrors)
 
 app.use(errCtrl.handlePSQLErrors)

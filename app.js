@@ -15,6 +15,8 @@ app.get("/api/articles/:article_id", ctrl.getArticleById)
 
 app.get("/api/articles/:article_id/comments", ctrl.getCommentsByArticle)
 
+app.post("/api/articles/:article_id/comments", ctrl.postCommentToArticle)
+
 app.use(errCtrl.handleCustomErrors)
 
 app.use(errCtrl.handlePSQLErrors)

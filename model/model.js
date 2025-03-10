@@ -45,3 +45,20 @@ exports.fetchCommentsByArticle = (id) => {
             return rows
         })
 }
+
+exports.insertComment = (articleId, username, body) => {
+    //fetch article first as article title is needed in comment
+    //console.log(title);
+    const createdAt = new Date(Date.now())
+    //console.log(createdAt)
+    return db.query(`
+        INSERT INTO comments
+        (votes, body, author, article_id, created_at)
+        VALUES
+        (0, $1, $2, $3, $4)
+        RETURNING *`, 
+        [body,username,articleId,createdAt])
+        .then(({rows})=> {
+            //console.log(rows)
+            return rows[0]})
+}

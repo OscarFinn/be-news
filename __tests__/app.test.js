@@ -50,7 +50,6 @@ describe("GET /api/topics", () => {
           .get("/api/topics")
           .expect(404)
           .then(({body}) => {
-            //console.log(body);
             const msg = body.msg;
             expect(msg).toBe("Table not found")
       })
@@ -73,18 +72,17 @@ describe("GET /api/articles", () => {
           expect(typeof article.created_at).toBe("string")
           expect(typeof article.votes).toBe("number")
           expect(typeof article.article_img_url).toBe("string")
-          //expect(article.number_of_comments).not.toBe(null)
         })
       })
   })
-  test("200: Array of articles contains a number of comments that is not null", () => {
+  test("200: Array of articles contains a number of comments that is a number", () => {
     return request(app)
       .get('/api/articles')
       .expect(200)
       .then(({body}) => {
         const articles = body.articles;
         articles.forEach((article) => {
-          expect(article.number_of_comments).not.toBe(null)
+          expect(typeof article.number_of_comments).toBe("number")
         })
       })
   })
@@ -108,6 +106,7 @@ describe("GET /api/articles", () => {
         expect(articles).toBeSortedBy('created_at',{descending: true})
       })
   })
+  //unnecessary but im leaving it there
   test("404: articles table is not found if articles table does not exist", () => {
     return db.query('DROP TABLE comments, articles, users, topics')
       .then(() => {
@@ -115,7 +114,6 @@ describe("GET /api/articles", () => {
           .get("/api/articles")
           .expect(404)
           .then(({body}) => {
-            //console.log(body);
             const msg = body.msg;
             expect(msg).toBe("Table not found")
       })
@@ -132,10 +130,6 @@ describe("GET /api/articles/:article_id", () => {
         const article = body.article;
         const date = new Date(1596464040000)
 
-        // console.log(article.created_at, '<--- created at with no changes')
-        // console.log(date, '<-- date with no changes')
-        // console.log(new Date(article.created_at).getTimezoneOffset(), '<--- created_at timezone offset')
-        // console.log(date.getTimezoneOffset(), '<--- timezone offset from test data')
         expect(article.title).toBe("UNCOVERED: catspiracy to bring down democracy")
         expect(article.author).toBe("rogersop")
         expect(article.article_id).toBe(5)
@@ -154,10 +148,6 @@ describe("GET /api/articles/:article_id", () => {
         const article = body.article;
         const date = new Date(1579126860000)
 
-        // console.log(article.created_at, '<--- created at with no changes')
-        // console.log(date, '<-- date with no changes')
-        // console.log(new Date(article.created_at).getTimezoneOffset(), '<--- created_at timezone offset')
-        // console.log(date.getTimezoneOffset(), '<--- timezone offset from test data')
         expect(article.title).toBe("Am I a cat?")
         expect(new Date(article.created_at).toString()).toBe(date.toString())
       })
@@ -189,15 +179,34 @@ describe("GET /api/articles/:article_id/comments", () => {
       .expect(200)
       .then(({body}) => {
         const comments = body.comments;
-        //console.log(comments)
+
         expect(comments.length).toBe(11);
+
         comments.forEach((comment) => {
           expect(typeof comment.comment_id).toBe("number");
-          expect(typeof comment.article_id).toBe("number");
+          expect(comment.article_id).toBe(1);
           expect(typeof comment.body).toBe("string");
           expect(typeof comment.votes).toBe("number");
           expect(typeof comment.author).toBe("string");
           expect(typeof comment.created_at).toBe("string");
+        })
+      })
+  })
+  test("200: checking a specific article with a single comment returns correct values", () => {
+    return request(app)
+      .get('/api/articles/6/comments')
+      .expect(200)
+      .then(({body}) => {
+        const comments = body.comments;
+
+        expect(comments.length).toBe(1);
+        comments.forEach((comment) => {
+          expect(comment.comment_id).toBe(16);
+          expect(comment.article_id).toBe(6);
+          expect(comment.body).toBe("This is a bad article name");
+          expect(comment.votes).toBe(1);
+          expect(comment.author).toBe("butter_bridge");
+          expect(`${new Date(comment.created_at)}`).toBe(`${new Date(1602433380000)}`);
         })
       })
   })
@@ -219,12 +228,22 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(msg).toBe('Article not found')
       })
   })
+  test("400: responds with an error message when trying to access comment from an invalid article",() => {
+    return request(app)
+      .get('/api/articles/banana/comments')
+      .expect(400)
+      .then(({body}) => {
+        const msg = body.msg
+        expect(msg).toBe('Bad request >:(')
+      })
+  })
   test("200: comments are ordered by most recent first", () => {
     return request(app)
       .get('/api/articles/1/comments')
       .expect(200)
       .then(({body}) => {
         const comments = body.comments
+        //ORDER BY created_at DESC means latest comments first
         expect(comments).toBeSortedBy('created_at', {descending:true})
       })
   })

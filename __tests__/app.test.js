@@ -88,6 +88,18 @@ describe("GET /api/articles", () => {
         })
       })
   })
+  test("200: Array of articles do not contain the body of the article", () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles;
+        articles.forEach((article) => {
+          expect(article.body).toBe(undefined)
+        })
+      })
+  })
+
 })
 
 describe("GET /api/articles/:article_id", () => {

@@ -14,6 +14,14 @@ exports.getTopics = (req,res,next) => {
         .catch(next)
 }
 
+exports.getArticles = (req,res,next) => {
+    model.fetchArticles()
+        .then((articles) => {
+            res.status(200).send({articles:articles})
+        })
+        .catch(next)
+}
+
 exports.getArticleById = (req,res,next) => {
     const articleId = req.params.article_id
     //console.log(articleId, '<--- article id')

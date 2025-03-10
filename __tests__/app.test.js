@@ -58,6 +58,71 @@ describe("GET /api/topics", () => {
   })
 })
 
+describe("GET /api/articles", () => {
+  test("200: responds with an array of articles", () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles;
+        articles.forEach((article) => {
+          expect(typeof article.title).toBe("string")
+          expect(typeof article.author).toBe("string")
+          expect(typeof article.article_id).toBe("number")
+          expect(typeof article.topic).toBe("string")
+          expect(typeof article.created_at).toBe("string")
+          expect(typeof article.votes).toBe("number")
+          expect(typeof article.article_img_url).toBe("string")
+          //expect(article.number_of_comments).not.toBe(null)
+        })
+      })
+  })
+  test("200: Array of articles contains a number of comments that is not null", () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles;
+        articles.forEach((article) => {
+          expect(article.number_of_comments).not.toBe(null)
+        })
+      })
+  })
+  test("200: Array of articles do not contain the body of the article", () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles;
+        articles.forEach((article) => {
+          expect(article.body).toBe(undefined)
+        })
+      })
+  })
+  test("200: Array of articles is sorted in descending order using the creation date", () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles;
+        expect(articles).toBeSortedBy('created_at',{descending: true})
+      })
+  })
+  test("404: articles table is not found if articles table does not exist", () => {
+    return db.query('DROP TABLE comments, articles, users, topics')
+      .then(() => {
+        return request(app)
+          .get("/api/articles")
+          .expect(404)
+          .then(({body}) => {
+            //console.log(body);
+            const msg = body.msg;
+            expect(msg).toBe("Table not found")
+      })
+    })
+  })
+})
+
 describe("GET /api/articles/:article_id", () => {
   test("200: Responds with the article denoted by the given article id", () => {
     return request(app)

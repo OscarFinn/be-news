@@ -9,6 +9,8 @@ app.get("/api", ctrl.getApi);
 
 app.get("/api/topics", ctrl.getTopics)
 
+app.get("/api/articles", ctrl.getArticles)
+
 app.get("/api/articles/:article_id", ctrl.getArticleById)
 
 app.use(errCtrl.handleCustomErrors)

@@ -13,7 +13,7 @@ exports.fetchTopics = () => {
         })
 }
 
-exports.fetchArticles = (sortBy = 'created_at', order = 'DESC') => {
+exports.fetchArticles = (sortBy = 'created_at', order = 'DESC', topic = undefined) => {
     const sortByGreenlist = ['article_id', "title", "topic", "author", "created_at", "votes"]
     const orderGreenlist = ['ASC','DESC']
 
@@ -21,11 +21,32 @@ exports.fetchArticles = (sortBy = 'created_at', order = 'DESC') => {
         FROM articles
         LEFT JOIN comments
         ON articles.article_id = comments.article_id
-        GROUP BY articles.article_id
-        ORDER BY`
+        `
+
+    const queryArr = []
+
+
+    let topicArgs = []
+
+    if(topic) {
+        if(Array.isArray(topic)) {
+            for(let item of topic) {
+                queryArr.push(item)
+                topicArgs.push(` topic = $${queryArr.length}`)
+            }
+        } else {
+            queryArr.push(topic)
+            topicArgs.push(` topic = $${queryArr.length}`)
+        }
+        queryStr += `WHERE ${topicArgs.join(' OR')}`
+    }
+
+
+    queryStr += `
+     GROUP BY articles.article_id`
 
     if(sortByGreenlist.includes(sortBy)){
-        queryStr += ` ${sortBy}`
+        queryStr += ` ORDER BY ${sortBy}`
     } else {
         return Promise.reject({status: 400, msg: `Bad request: Cannot sort by '${sortBy}'`})
     }
@@ -36,9 +57,9 @@ exports.fetchArticles = (sortBy = 'created_at', order = 'DESC') => {
     } else {
         return Promise.reject({status:400, msg: `Bad request: Cannot order by '${order}'`})
     }
-
+    //console.log(queryArr)
     //console.log(queryStr)
-    return db.query(queryStr)
+    return db.query(queryStr,queryArr)
         .then(({rows}) => {
             return rows;
         })

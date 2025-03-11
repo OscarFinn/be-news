@@ -53,9 +53,9 @@ exports.insertComment = (articleId, username, body) => {
     //console.log(createdAt)
     return db.query(`
         INSERT INTO comments
-        (votes, body, author, article_id, created_at)
+        (body, author, article_id, created_at)
         VALUES
-        (0, $1, $2, $3, $4)
+        ($1, $2, $3, $4)
         RETURNING *`, 
         [body,username,articleId,createdAt])
         .then(({rows})=> {

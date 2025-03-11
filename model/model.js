@@ -164,3 +164,14 @@ exports.fetchUserByUsername = (username) => {
         }
     })
 }
+
+exports.updateComment = (commentId, voteChange) => {
+    return db.query(`
+        UPDATE comments
+        SET votes = votes + $1
+        WHERE comment_id = $2
+        RETURNING *`,[voteChange,commentId])
+        .then(({rows}) => {
+            return rows[0]
+        })
+}

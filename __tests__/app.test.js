@@ -564,3 +564,24 @@ describe("GET /api/users/:username", () => {
     })
   })
 })
+
+describe("PATCH: /api/comments/:comment_id", () => {
+  test("200: Comment votes are updated correctly when passed a valid update", () => {
+    const input = {
+      inc_votes: -100
+    }
+    return request(app)
+    .patch('/api/comments/2')
+    .send(input)
+    .expect(200)
+    .then(({body}) => {
+      const comment = body.comment;
+      expect(comment.comment_id).toBe(2)
+      expect(comment.votes).toBe(-86)
+      expect(comment.article_id).toBe(1)
+      expect(comment.body).toBe("The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.")
+      expect(comment.author).toBe("butter_bridge")
+      expect(`${new Date(comment.created_at)}`).toBe(`${new Date(1604113380000)}`)
+    })
+  })
+})

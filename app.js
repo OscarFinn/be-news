@@ -23,6 +23,8 @@ app.delete('/api/comments/:comment_id', ctrl.deleteComment)
 
 app.get("/api/comments/:comment_id", ctrl.getCommentById)
 
+app.get('/api/users', ctrl.getUsers)
+
 app.use(errCtrl.handleCustomErrors)
 
 app.use(errCtrl.handlePSQLErrors)

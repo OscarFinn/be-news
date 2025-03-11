@@ -67,8 +67,6 @@ exports.fetchArticles = (sortBy = 'created_at', order = 'DESC', topic = undefine
     } else {
         return Promise.reject({status:400, msg: `Bad request: Cannot order by '${order}'`})
     }
-    //console.log(queryArr)
-    //console.log(queryStr)
     return db.query(queryStr,queryArr)
         .then(({rows}) => {
             return rows;
@@ -78,11 +76,9 @@ exports.fetchArticles = (sortBy = 'created_at', order = 'DESC', topic = undefine
 exports.fetchArticle = (id) => {
     return db.query(`SELECT * FROM articles WHERE article_id = $1`,[id])
         .then(({rows}) => {
-            //console.log(rows, '<--- article')
             if(rows.length === 0) {
                 return Promise.reject({status:404, msg: 'Article not found'})
             }
-            //console.log(rows, '<--- article in model')
             return rows[0];
         })
 }
@@ -90,16 +86,13 @@ exports.fetchArticle = (id) => {
 exports.fetchCommentsByArticle = (id) => {
     return db.query(`SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC`, [id])
         .then(({rows}) => {
-            //console.log(rows, '<--- comments for an article')
+            
             return rows
         })
 }
 
 exports.insertComment = (articleId, username, body) => {
-    //fetch article first as article title is needed in comment
-    //console.log(title);
     const createdAt = new Date(Date.now())
-    //console.log(createdAt)
     return db.query(`
         INSERT INTO comments
         (body, author, article_id, created_at)
@@ -108,7 +101,6 @@ exports.insertComment = (articleId, username, body) => {
         RETURNING *`, 
         [body,username,articleId,createdAt])
         .then(({rows})=> {
-            //console.log(rows)
             return rows[0]})
 }
 

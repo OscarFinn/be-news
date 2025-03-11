@@ -61,21 +61,12 @@ exports.getCommentsByArticle = (req,res,next) => {
             res.status(200).send({comments:comments})
         })
         .catch(next)
-    // model.fetchArticle(articleId)
-    //     .then(() => {
-    //          return model.fetchCommentsByArticle(articleId)
-    //     })
-    //     .then((comments) => {
-    //         res.status(200).send({comments:comments})
-    //     })
-    //     .catch(next)
-    
 }
 
 exports.postCommentToArticle = (req,res,next) => {
     const articleId = req.params.article_id
     const {username, body} = req.body
-    //console.log(articleId, username, body)
+
     const checkUserExists = model.fetchUser(username)
     const checkArticleExists = model.fetchArticle(articleId)
     const postComment = model.insertComment(articleId,username,body)

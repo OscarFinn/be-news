@@ -26,19 +26,19 @@ exports.fetchArticles = (sortBy = 'created_at', order = 'DESC', topic = undefine
     const queryArr = []
 
 
-    let topicArgs = []
+    let whereArgs = []
 
     if(topic) {
         if(Array.isArray(topic)) {
             for(let item of topic) {
                 queryArr.push(item)
-                topicArgs.push(` topic = $${queryArr.length}`)
+                whereArgs.push(` topic = $${queryArr.length}`)
             }
         } else {
             queryArr.push(topic)
-            topicArgs.push(` topic = $${queryArr.length}`)
+            whereArgs.push(` topic = $${queryArr.length}`)
         }
-        queryStr += `WHERE ${topicArgs.join(' OR')}`
+        queryStr += `WHERE ${whereArgs.join(' OR')}`
     }
 
 

@@ -15,7 +15,10 @@ exports.getTopics = (req,res,next) => {
 }
 
 exports.getArticles = (req,res,next) => {
-    model.fetchArticles()
+    const {sort_by, order} = req.query
+
+    
+    model.fetchArticles(sort_by, order)
         .then((articles) => {
             res.status(200).send({articles:articles})
         })

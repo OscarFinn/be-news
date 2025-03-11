@@ -584,4 +584,30 @@ describe("PATCH: /api/comments/:comment_id", () => {
       expect(`${new Date(comment.created_at)}`).toBe(`${new Date(1604113380000)}`)
     })
   })
+  test("404: Returns a not found error when comment does not exist", () => {
+    const input = {
+      inc_votes: -100
+    }
+    return request(app)
+    .patch('/api/comments/9999')
+    .send(input)
+    .expect(404)
+    .then(({body}) => {
+      const msg = body.msg
+      expect(msg).toBe("Comment not found")
+    })
+  })
+  test("400: Returns a bad request error when passed an invalid input", () => {
+    const input = {
+      invalid: -100
+    }
+    return request(app)
+    .patch('/api/comments/1')
+    .send(input)
+    .expect(400)
+    .then(({body}) => {
+      const msg = body.msg
+      expect(msg).toBe('Bad request: no votes passed')
+    })
+  })
 })

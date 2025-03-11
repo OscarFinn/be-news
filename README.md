@@ -1,14 +1,15 @@
 # NEWS BACKEND PROJECT
 
+## WHAT AM I LOOKING AT?
+
+This is a project to create a RESTful api backend for a basic news aggregation site. The site has articles, comments, users and topics stored in the database and this api can be used to access and edit data.
+
 Explore the db online:
 
     https://be-news-olwx.onrender.com/api
 
 Expect to receive a '502 Bad Gateway' error on first clicking this link as it will take some time to come online. Refresh the link after a few minutes have passed.
 
-## WHAT AM I LOOKING AT?
-
-This is a project to create a RESTful api backend for a basic news aggregation site. The site has articles, comments, users and topics stored in the database and this api can be used to access and edit data.
 
 ## INITIAL SETUP
 

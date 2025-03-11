@@ -45,3 +45,33 @@ exports.fetchCommentsByArticle = (id) => {
             return rows
         })
 }
+
+exports.insertComment = (articleId, username, body) => {
+    //fetch article first as article title is needed in comment
+    //console.log(title);
+    const createdAt = new Date(Date.now())
+    //console.log(createdAt)
+    return db.query(`
+        INSERT INTO comments
+        (votes, body, author, article_id, created_at)
+        VALUES
+        (0, $1, $2, $3, $4)
+        RETURNING *`, 
+        [body,username,articleId,createdAt])
+        .then(({rows})=> {
+            //console.log(rows)
+            return rows[0]})
+}
+
+exports.fetchUser = (username) => {
+    return db.query(`
+        SELECT * FROM users
+        WHERE username = $1`, [username])
+        .then(({rows}) => {
+            if(rows.length === 0) {
+                return Promise.reject({status: 404, msg: "User not found"})
+            } else {
+                rows[0]
+            }
+        })
+}

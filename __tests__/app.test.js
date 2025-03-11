@@ -248,3 +248,85 @@ describe("GET /api/articles/:article_id/comments", () => {
       })
   })
 })
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: Comment is posted on a valid article and returns correct values", () => {
+    const input = {
+      username: "icellusedkars",
+      body: "got ahold of a lot of teslas recently..."
+    }
+    
+    return request(app)
+      .post('/api/articles/2/comments')
+      .send(input)
+      .expect(201)
+      .then(({body}) => {
+        const comment = body.comment
+        expect(comment.author).toBe('icellusedkars')
+        expect(comment.body).toBe('got ahold of a lot of teslas recently...')
+        expect(comment.votes).toBe(0);
+        expect(comment.article_id).toBe(2)
+        //test created_at too but not sure how
+      })
+  })
+  test("404: Comment is posted on a nonexistent article returns a an error", () => {
+    const input = {
+      username: "icellusedkars",
+      body: "got ahold of a lot of teslas recently..."
+    }
+    
+    return request(app)
+      .post('/api/articles/999/comments')
+      .send(input)
+      .expect(404)
+      .then(({body}) => {
+        const msg = body.msg
+        expect(msg).toBe("Article not found")
+      })
+  })
+  test("400: Comment posted without a usename or body attached returns a bad query", () => {
+    const input = {
+      username: "icellusedkars",
+    }
+    
+    return request(app)
+      .post('/api/articles/5/comments')
+      .send(input)
+      .expect(400)
+      .then(({body}) => {
+        const msg = body.msg
+        expect(msg).toBe("Bad request, missing values")
+      })
+  })
+  test("400: Comment posted to an invalid article returns a bad query error", () => {
+    const input = {
+      username: "rogersop",
+      body: "Here i am, making a comment"
+    }
+    
+    return request(app)
+      .post('/api/articles/notarticle/comments')
+      .send(input)
+      .expect(400)
+      .then(({body}) => {
+        const msg = body.msg
+        expect(msg).toBe("Bad request >:(")
+      })
+  })
+  test("404: Comment posted by a nonexistent user returns a not found error", () => {
+    const input = {
+      username: "oscarisnotinthisdb",
+      body: "not a real person"
+    }
+
+    return request(app)
+      .post('/api/articles/4/comments')
+      .send(input)
+      .expect(404)
+      .then(({body})=> {
+        const msg = body.msg
+        expect(msg).toBe("User not found")
+      })
+  })
+
+})

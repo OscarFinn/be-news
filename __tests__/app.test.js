@@ -330,3 +330,72 @@ describe("POST /api/articles/:article_id/comments", () => {
   })
 
 })
+
+describe.only("PATCH: /api/articles/:article_id", () => {
+  test("200: Correctly updates votes on given article", () => {
+    const input = {
+      inc_votes: 13,
+    }
+    return request(app)
+      .patch('/api/articles/1')
+      .send(input)
+      .expect(200)
+      .then(({body})=> {
+        const article = body.article
+        expect(article.votes).toBe(113)
+        expect(article.article_id).toBe(1)
+      })
+  })
+  test("200: Correctly updates votes when passed a negative on given article", () => {
+    const input = {
+      inc_votes: -6,
+    }
+    return request(app)
+      .patch('/api/articles/2')
+      .send(input)
+      .expect(200)
+      .then(({body})=> {
+        const article = body.article
+        expect(article.article_id).toBe(2)
+        expect(article.votes).toBe(-6)
+      })
+  })
+  test("404: returns a not found error if article does not exist", () => {
+    const input = {
+      inc_votes: -999,
+    }
+    return request(app)
+      .patch('/api/articles/999')
+      .send(input)
+      .expect(404)
+      .then(({body})=> {
+        const msg = body.msg
+        expect(msg).toBe("Article not found")
+      })
+  })
+  test("400: returns a bad request error if votes passed is not a number", () => {
+    const input = {
+      inc_votes: "Me nan"
+    }
+    return request(app)
+      .patch('/api/articles/3')
+      .send(input)
+      .expect(400)
+      .then(({body})=> {
+        const msg = body.msg
+        expect(msg).toBe("Bad request >:(")
+      })
+  })
+  test("400: returns a bad request error if no votes are passed", () => {
+    const input = {
+    }
+    return request(app)
+      .patch('/api/articles/3')
+      .send(input)
+      .expect(400)
+      .then(({body})=> {
+        const msg = body.msg
+        expect(msg).toBe("Bad request: no votes passed")
+      })
+  })
+})

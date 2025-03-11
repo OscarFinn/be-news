@@ -111,6 +111,17 @@
         "created_at": "2020-01-30T12:42:13.341Z"
       }
     }
+  },
+  "GET /api/users": {
+    "descriptions": "Fetches the array of users from the database",
+    "exampleResponse": [
+      {
+        "username": "MuadDib",
+        "name": "Paul",
+        "avatar_url": "https://dune.fandom.com/wiki/Paul_Atreides?file=Paul+Atreides+1984.jpg"
+      }
+    ]
   }
+
   
 }

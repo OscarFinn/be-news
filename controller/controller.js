@@ -102,3 +102,11 @@ exports.getCommentById = (req,res,next) => {
     })
     .catch(next)
 }
+
+exports.getUsers = (req,res,next) => {
+    model.fetchUsers()
+    .then(users => {
+        res.status(200).send({users:users})
+    })
+    .catch(next)
+}

@@ -119,6 +119,42 @@ describe("GET /api/articles", () => {
       })
     })
   })
+  test("200: returned articles are sorted by given greenlisted query", () => {
+    return request(app)
+      .get('/api/articles?sort_by=topic')
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles;
+        expect(articles).toBeSortedBy('topic',{descending: true})
+      })
+  })
+  test("200: returned articles are sorted by given order", () => {
+    return request(app)
+      .get('/api/articles?order=asc')
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles;
+        expect(articles).toBeSortedBy('created_at',{ascending: true })
+      })
+  })
+  test("400: Returns a bad request error when passed a non greenlisted sort", () => {
+    return request(app)
+      .get('/api/articles?sort_by=article_img_url')
+      .expect(400)
+      .then(({body}) => {
+        const msg = body.msg
+        expect(msg).toBe("Bad request: Cannot sort by 'article_img_url'")
+      })
+  })
+  test("400: Returns a bad request error when passed a non greenlisted order", () => {
+    return request(app)
+      .get('/api/articles?order=desk')
+      .expect(400)
+      .then(({body}) => {
+        const msg = body.msg
+        expect(msg).toBe("Bad request: Cannot order by 'desk'")
+      })
+  })
 })
 
 describe("GET /api/articles/:article_id", () => {

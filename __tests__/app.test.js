@@ -262,10 +262,12 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(201)
       .then(({body}) => {
         const comment = body.comment
+        expect(comment.comment_id).toBe(19)
         expect(comment.author).toBe('icellusedkars')
         expect(comment.body).toBe('got ahold of a lot of teslas recently...')
         expect(comment.votes).toBe(0);
         expect(comment.article_id).toBe(2)
+        expect(typeof comment.created_at).toBe('string')
         //test created_at too but not sure how
       })
   })

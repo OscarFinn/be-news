@@ -56,12 +56,13 @@ exports.postCommentToArticle = (req,res,next) => {
     const articleId = req.params.article_id
     const {username, body} = req.body
     //console.log(articleId, username, body)
-    
-    const checkExists = model.fetchArticle(articleId)
+    const checkUserExists = model.fetchUser(username)
+    const checkArticleExists = model.fetchArticle(articleId)
     const postComment = model.insertComment(articleId,username,body)
 
-    Promise.all([checkExists, postComment])
-    .then(({[1]:comment}) => {
+    Promise.all([checkArticleExists, checkUserExists, postComment])
+    .then(({[2]:comment}) => {
         res.status(201).send({comment:comment})
     })
+    .catch(next)
 }

@@ -495,6 +495,15 @@ describe("DELETE /api/comments/:comment_id", () => {
       expect(msg).toBe('Comment not found')
     })
   })
+  test("400: returns a bad request when passed an invalid comment id", () => {
+    return request(app)
+    .delete(`/api/comments/notthecommentid`)
+    .expect(400)
+    .then(({body}) => {
+      const msg = body.msg
+      expect(msg).toBe("Bad request >:(")
+    })
+  })
 })
 
 describe("GET /api/users", () => {

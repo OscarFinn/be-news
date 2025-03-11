@@ -522,3 +522,36 @@ describe("GET /api/users", () => {
       })
   })
 })
+
+describe("GET /api/users/:username", () => {
+  test("200: Returns the user associated with the given username", () => {
+    return request(app)
+      .get('/api/users/butter_bridge')
+      .expect(200)
+      .then(({body})=> {
+        const user = body.user
+        expect(user.username).toBe('butter_bridge')
+        expect(user.name).toBe('jonny')
+        expect(user.avatar_url).toBe("https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg")
+      })
+  })
+  test("404: Returns a 404 error when the user does not exist", () => {
+    return request(app)
+    .get('/api/users/bingus')
+    .expect(404)
+    .then(({body})=> {
+      const msg = body.msg
+      expect(msg).toBe("User not found")
+    })
+  })
+  test("400: Returns a 400 when an invalid username is passed", () => {
+    //max username length is 32 chars
+    return request(app)
+    .get('/api/users/daenerysstormbornofhousetargaryenthefirstofhernamequeenoftheandalsandthefirstmenprotectorofthesevenkingdomsthemotherofdragonsthekhaleesiofthegreatgrasseatheunburntthebreakerofchains')
+    .expect(400)
+    .then(({body}) => {
+      const msg = body.msg
+      expect(msg).toBe("Bad request: Invalid username")
+    })
+  })
+})

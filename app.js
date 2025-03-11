@@ -25,6 +25,8 @@ app.get("/api/comments/:comment_id", ctrl.getCommentById)
 
 app.get('/api/users', ctrl.getUsers)
 
+app.get('/api/users/:username', ctrl.getUserByUsername)
+
 app.use(errCtrl.handleCustomErrors)
 
 app.use(errCtrl.handlePSQLErrors)

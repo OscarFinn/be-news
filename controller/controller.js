@@ -111,3 +111,12 @@ exports.getUsers = (req,res,next) => {
     })
     .catch(next)
 }
+
+exports.getUserByUsername = (req,res,next) => {
+    const username = req.params.username
+    model.fetchUserByUsername(username)
+    .then(user => {
+        res.status(200).send({user:user})
+    })
+    .catch(next)
+}

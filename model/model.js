@@ -148,3 +148,17 @@ exports.fetchUsers = () => {
     return db.query(`SELECT * FROM users`)
     .then(({rows})=>rows)
 }
+
+exports.fetchUserByUsername = (username) => {
+    if(username.length > 32) {
+        return Promise.reject({status:400, msg: "Bad request: Invalid username"})
+    }
+    return db.query(`SELECT * FROM users WHERE username = $1`,[username])
+    .then(({rows}) => {
+        if(rows.length === 0) {
+            return Promise.reject({status:404, msg: "User not found"})
+        } else {
+            return rows[0]
+        }
+    })
+}

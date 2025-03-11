@@ -106,6 +106,39 @@ describe("GET /api/articles", () => {
         expect(articles).toBeSortedBy('created_at',{descending: true})
       })
   })
+  test("200: Returns an array of articles with the given topic when passed a topic query", () => {
+    return request(app)
+      .get('/api/articles?topic=cats')
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles;
+        //all else are mitch
+        expect(articles.length).toBe(1)
+        expect(articles[0].topic).toBe("cats")
+      })
+  })
+  test("200: Returns an empty array of articles when passed a non present topic", () => {
+    return request(app)
+      .get('/api/articles?topic=thingsthatarentmitch')
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles;
+        expect(articles.length).toBe(0)
+      })
+  })
+  test("200: Returns an array of articles when passed multiple topic queries", () => {
+    const regex = /(^(mitch|cats)$)/
+    return request(app)
+      .get('/api/articles?topic=mitch&topic=cats')
+      .expect(200)
+      .then(({body}) => {
+        const articles = body.articles;
+        expect(articles.length).toBe(13)
+        articles.forEach((article) => {
+          expect(article.topic).toMatch(regex)
+        })
+      })
+  })
   //unnecessary but im leaving it there
   test("404: articles table is not found if articles table does not exist", () => {
     return db.query('DROP TABLE comments, articles, users, topics')

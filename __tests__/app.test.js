@@ -117,13 +117,22 @@ describe("GET /api/articles", () => {
         expect(articles[0].topic).toBe("cats")
       })
   })
-  test("200: Returns an empty array of articles when passed a non present topic", () => {
+  test("200: Returns an empty array of articles when passed a valid topic not used", () => {
     return request(app)
-      .get('/api/articles?topic=thingsthatarentmitch')
+      .get('/api/articles?topic=paper')
       .expect(200)
       .then(({body}) => {
         const articles = body.articles;
         expect(articles.length).toBe(0)
+      })
+  })
+  test("404: Returns a 404 if passed a topic not present in the database", () => {
+    return request(app)
+      .get('/api/articles?topic=thingsthatarentmitch')
+      .expect(404)
+      .then(({body}) => {
+        const msg = body.msg
+        expect(msg).toBe("The topic 'thingsthatarentmitch' does not exist")
       })
   })
   test("200: Returns an array of articles when passed multiple topic queries", () => {

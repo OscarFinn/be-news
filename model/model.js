@@ -8,9 +8,19 @@ exports.fetchApi = () => {
 exports.fetchTopics = () => {
     return db.query(`SELECT * FROM topics`)
         .then(({rows}) => {
-            //console.log(rows, '<--- topics in model')
             return rows
         })
+}
+
+exports.fetchTopicsBySlug = (slug) => {
+    return db.query(`SELECT * FROM topics WHERE slug = $1`,[slug])
+    .then(({rows}) => {
+        if(rows.length === 0) {
+            return Promise.reject({status:404, msg: `The topic '${slug}' does not exist`})
+        } else {
+            return rows[0]
+        }
+    })
 }
 
 exports.fetchArticles = (sortBy = 'created_at', order = 'DESC', topic = undefined) => {
@@ -26,7 +36,7 @@ exports.fetchArticles = (sortBy = 'created_at', order = 'DESC', topic = undefine
     const queryArr = []
 
 
-    let whereArgs = []
+    const whereArgs = []
 
     if(topic) {
         if(Array.isArray(topic)) {

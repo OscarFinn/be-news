@@ -16,8 +16,27 @@ exports.getTopics = (req,res,next) => {
 
 exports.getArticles = (req,res,next) => {
     const {sort_by, order, topic} = req.query
-    model.fetchArticles(sort_by, order, topic)
-        .then((articles) => {
+
+    const promiseArr = []
+
+    const fetchArticles = model.fetchArticles(sort_by, order, topic)
+    promiseArr.push(fetchArticles)
+
+    if(topic) {
+        if (Array.isArray(topic)) {
+            for (let item of topic) {
+                const checkTopicExists = model.fetchTopicsBySlug(item)
+                promiseArr.push(checkTopicExists)
+            }
+        } else {
+        const checkTopicExists = model.fetchTopicsBySlug(topic)
+        promiseArr.push(checkTopicExists)
+        }
+    }
+
+
+    Promise.all(promiseArr)
+        .then(({[0]:articles}) => {
             res.status(200).send({articles:articles})
         })
         .catch(next)

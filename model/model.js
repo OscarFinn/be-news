@@ -164,3 +164,17 @@ exports.fetchUserByUsername = (username) => {
         }
     })
 }
+
+exports.updateComment = (commentId, voteChange) => {
+    if(!voteChange) {
+        return Promise.reject({status:400, msg:"Bad request: no votes passed"})
+    }
+    return db.query(`
+        UPDATE comments
+        SET votes = votes + $1
+        WHERE comment_id = $2
+        RETURNING *`,[voteChange,commentId])
+        .then(({rows}) => {
+            return rows[0]
+        })
+}

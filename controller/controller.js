@@ -130,3 +130,17 @@ exports.getUserByUsername = (req,res,next) => {
     })
     .catch(next)
 }
+
+exports.patchComment = (req,res,next) => {
+    const commentId = req.params.comment_id
+    const {inc_votes} = req.body
+
+    const checkCommentExists = model.fetchComment(commentId)
+    const updateComment = model.updateComment(commentId,inc_votes)
+
+    Promise.all([updateComment,checkCommentExists])
+    .then(({[0]:comment}) => {
+        res.status(200).send({comment:comment})
+    })
+    .catch(next)
+}

@@ -23,6 +23,8 @@ app.delete('/api/comments/:comment_id', ctrl.deleteComment)
 
 app.get("/api/comments/:comment_id", ctrl.getCommentById)
 
+app.patch('/api/comments/:comment_id', ctrl.patchComment)
+
 app.get('/api/users', ctrl.getUsers)
 
 app.get('/api/users/:username', ctrl.getUserByUsername)

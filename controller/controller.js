@@ -66,3 +66,16 @@ exports.postCommentToArticle = (req,res,next) => {
     })
     .catch(next)
 }
+
+exports.patchArticle = (req,res,next) => {
+    const articleId = req.params.article_id
+    const {inc_votes} = req.body
+    const checkArticleExists = model.fetchArticle(articleId)
+    const updateVotes = model.updateArticleVotes(articleId, inc_votes)
+
+    Promise.all([checkArticleExists,updateVotes])
+    .then(({[1]:article}) => {
+        res.status(200).send({article:article})
+    })
+    .catch(next)
+}

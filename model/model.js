@@ -71,7 +71,21 @@ exports.fetchUser = (username) => {
             if(rows.length === 0) {
                 return Promise.reject({status: 404, msg: "User not found"})
             } else {
-                rows[0]
+                return rows[0]
             }
+        })
+}
+
+exports.updateArticleVotes = (articleId, voteChange) => {
+    if(!voteChange) {
+        return Promise.reject({status: 400, msg: "Bad request: no votes passed"})
+    }
+    return db.query(`
+        UPDATE articles
+        SET votes = votes + $1
+        WHERE article_id = $2
+        RETURNING article_id, votes`, [voteChange,articleId])
+        .then(({rows})=> {
+            return rows[0]
         })
 }

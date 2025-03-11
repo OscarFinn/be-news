@@ -121,6 +121,14 @@
         "avatar_url": "https://dune.fandom.com/wiki/Paul_Atreides?file=Paul+Atreides+1984.jpg"
       }
     ]
+  },
+  "GET /api/users/:username": {
+    "descriptions": "Fetches the user associated with the given username",
+    "exampleResponse": {
+      "username": "datboi",
+      "name": "Tim",
+      "avatar_url": "https://upload.wikimedia.org/wikipedia/en/f/f9/Dat_Boi_%28resized_50%25%29.jpg"
+    }
   }
 
   

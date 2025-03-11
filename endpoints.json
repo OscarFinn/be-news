@@ -27,7 +27,7 @@
     }
   },
   "GET /api/articles/:article_id": {
-    "descriptions": "serves a single article specified by given id",
+    "description": "serves a single article specified by given id",
     "queries": [],
     "exampleResponse": {
       "article": {
@@ -43,7 +43,7 @@
     }
   },
   "GET /api/articles/:article_id/comments": {
-    "descriptions": "Serves the comments associated with a specific article id",
+    "description": "Serves the comments associated with a specific article id",
     "queries": [],
     "exampleResponse": {
       "comments": [
@@ -59,7 +59,7 @@
     }
   },
   "POST /api/articles/:article_id/comments": {
-    "descriptions": "Adds a comment to the database associated with a specific article",
+    "description": "Adds a comment to the database associated with a specific article",
     "body": {
       "username": "exampleOscar",
       "body": "This is an example of a new comment"
@@ -77,7 +77,7 @@
     }
   },
   "PATCH /api/articles/:article_id": {
-    "descriptions": "Updates the vote count on a given article",
+    "description": "Updates the vote count on a given article",
     "body": {
       "inc_votes": 6
     },
@@ -95,11 +95,11 @@
       }
   },
   "DELETE /api/comments/:comment_id": {
-    "descriptions": "Removes the comment denoted by the given comment id",
+    "description": "Removes the comment denoted by the given comment id",
     "exampleResponse": {}
   },
   "GET /api/comments/:comment_id": {
-    "descriptions": "Fetches the comment denoted by the given comment id",
+    "description": "Fetches the comment denoted by the given comment id",
     "exampleResponse": {
       "comment":
       {
@@ -113,7 +113,7 @@
     }
   },
   "GET /api/users": {
-    "descriptions": "Fetches the array of users from the database",
+    "description": "Fetches the array of users from the database",
     "exampleResponse": [
       {
         "username": "MuadDib",
@@ -123,13 +123,26 @@
     ]
   },
   "GET /api/users/:username": {
-    "descriptions": "Fetches the user associated with the given username",
+    "description": "Fetches the user associated with the given username",
     "exampleResponse": {
       "username": "datboi",
       "name": "Tim",
       "avatar_url": "https://upload.wikimedia.org/wikipedia/en/f/f9/Dat_Boi_%28resized_50%25%29.jpg"
     }
+  },
+  "PATCH /api/comments/:comment_id": {
+    "description": "Updates the given comments votes",
+    "body": {
+      "inc_votes": 1000
+    },
+    "exampleResponse": {
+      "comment_id": 10,
+      "article_id": 5,
+      "body": "They really should not have rushed the ending of game of thrones",
+      "votes": 1001,
+      "author": "meMyselfandI",
+      "created_at":"2020-01-30T12:42:13.341Z"
+    }
   }
-
   
 }

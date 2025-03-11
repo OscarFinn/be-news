@@ -175,7 +175,6 @@ exports.updateComment = (commentId, voteChange) => {
         WHERE comment_id = $2
         RETURNING *`,[voteChange,commentId])
         .then(({rows}) => {
-            console.log(rows)
             return rows[0]
         })
 }

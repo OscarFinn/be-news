@@ -60,9 +60,12 @@
   },
   "POST /api/articles/:article_id/comments": {
     "descriptions": "Adds a comment to the database associated with a specific article",
-    "queries": [],
+    "body": {
+      "username": "exampleOscar",
+      "body": "This is an example of a new comment"
+    },
     "exampleResponse": {
-        "comment": [
+        "comment": 
           {
             "comment_id": 1,
             "article_id": 1,
@@ -71,11 +74,13 @@
             "created_at": "2020-08-03T14:14:00.000Z",
             "votes": 0
           }
-        ]
+    }
   },
   "PATCH /api/articles/:article_id": {
     "descriptions": "Updates the vote count on a given article",
-    "queries": [{"inc_votes": 6}],
+    "body": {
+      "inc_votes": 6
+    },
     "exampleResponse": {
         "article": 
           {
@@ -88,6 +93,24 @@
             "comment_count": 6
           }
       }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "descriptions": "Removes the comment denoted by the given comment id",
+    "exampleResponse": {}
+  },
+  "GET /api/comments/:comment_id": {
+    "descriptions": "Fetches the comment denoted by the given comment id",
+    "exampleResponse": {
+      "comment":
+      {
+        "comment_id":12,
+        "article_id":4,
+        "body": "Goku is much stronger than Luffy",
+        "votes": 9001,
+        "author": "PwrLvlArbiter",
+        "created_at": "2020-01-30T12:42:13.341Z"
+      }
     }
   }
+  
 }

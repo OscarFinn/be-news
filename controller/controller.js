@@ -79,3 +79,26 @@ exports.patchArticle = (req,res,next) => {
     })
     .catch(next)
 }
+
+exports.deleteComment = (req,res,next) => {
+    const commentId = req.params.comment_id
+
+    const checkCommentExists = model.fetchComment(commentId)
+
+    const removeComment = model.removeComment(commentId)
+
+    Promise.all([checkCommentExists,removeComment])
+    .then(() => {
+        res.status(204).send()
+    })
+    .catch(next)
+}
+
+exports.getCommentById = (req,res,next) => {
+    const commentId = req.params.comment_id
+    model.fetchComment(commentId)
+    .then((comment) => {
+        res.status(200).send({comment:comment})
+    })
+    .catch(next)
+}

@@ -19,6 +19,10 @@ app.post("/api/articles/:article_id/comments", ctrl.postCommentToArticle)
 
 app.patch('/api/articles/:article_id', ctrl.patchArticle)
 
+app.delete('/api/comments/:comment_id', ctrl.deleteComment)
+
+app.get("/api/comments/:comment_id", ctrl.getCommentById)
+
 app.use(errCtrl.handleCustomErrors)
 
 app.use(errCtrl.handlePSQLErrors)

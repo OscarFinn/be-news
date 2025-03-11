@@ -399,3 +399,29 @@ describe("PATCH: /api/articles/:article_id", () => {
       })
   })
 })
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: deletes given comment, no response", () => {
+    return request(app)
+      .delete('/api/comments/7')
+      .expect(204)
+      .then(()=> {
+        return request(app)
+        .get('/api/comments/7')
+        .expect(404)
+        .then(({body})=> {
+          const msg = body.msg
+          expect(msg).toBe("Comment not found")
+        })
+      })
+  })
+  test("404: Cannot delete a comment that does not exist", () => {
+    return request(app)
+    .delete('/api/comments/999')
+    .expect(404)
+    .then(({body}) => {
+      const msg = body.msg
+      expect(msg).toBe('Comment not found')
+    })
+  })
+})

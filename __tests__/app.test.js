@@ -217,7 +217,6 @@ describe("GET /api/articles", () => {
       .get("/api/articles?p=notanum")
       .expect(400)
       .then(({ body: { msg } }) => {
-        //13 articles total, limit is 10, so 3 articles should be present on page2
         expect(msg).toBe("Bad Request: 'p' must be a number");
       });
   });
@@ -226,7 +225,6 @@ describe("GET /api/articles", () => {
       .get("/api/articles?limit=notanum")
       .expect(400)
       .then(({ body: { msg } }) => {
-        //13 articles total, limit is 10, so 3 articles should be present on page2
         expect(msg).toBe("Bad Request: 'limit' must be a number");
       });
   });

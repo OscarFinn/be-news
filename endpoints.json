@@ -43,8 +43,8 @@
     }
   },
   "GET /api/articles/:article_id/comments": {
-    "description": "Serves the comments associated with a specific article id",
-    "queries": [],
+    "description": "Serves the comments associated with a specific article id. Comments are paginated by 'limit'(number of comments per page) and 'p'(page number to return) ",
+    "queries": ["limit", "p"],
     "exampleResponse": {
       "comments": [
         {

@@ -62,6 +62,7 @@ describe("GET /api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         const articles = body.articles;
+        expect(articles.length > 1).toBe(true);
         articles.forEach((article) => {
           expect(typeof article.title).toBe("string");
           expect(typeof article.author).toBe("string");
@@ -136,7 +137,7 @@ describe("GET /api/articles", () => {
   test("200: Returns an array of articles when passed multiple topic queries", () => {
     const regex = /(^(mitch|cats)$)/;
     return request(app)
-      .get("/api/articles?topic=mitch&topic=cats")
+      .get("/api/articles?limit=15&topic=mitch&topic=cats")
       .expect(200)
       .then(({ body }) => {
         const articles = body.articles;
@@ -192,6 +193,57 @@ describe("GET /api/articles", () => {
       .then(({ body }) => {
         const msg = body.msg;
         expect(msg).toBe("Bad request: Cannot order by 'desk'");
+      });
+  });
+  test("200: Returns a list of articles of length limit", () => {
+    return request(app)
+      .get("/api/articles?limit=5")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(5);
+      });
+  });
+  test("200: Returns the articles found on the passed in page", () => {
+    return request(app)
+      .get("/api/articles?p=2")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        //13 articles total, limit is 10, so 3 articles should be present on page2
+        expect(articles.length).toBe(3);
+      });
+  });
+  test("400: returns a bad request if page is not a number", () => {
+    return request(app)
+      .get("/api/articles?p=notanum")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        //13 articles total, limit is 10, so 3 articles should be present on page2
+        expect(msg).toBe("Bad Request: 'p' must be a number");
+      });
+  });
+  test("400: returns a bad request if limit is not a number", () => {
+    return request(app)
+      .get("/api/articles?limit=notanum")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        //13 articles total, limit is 10, so 3 articles should be present on page2
+        expect(msg).toBe("Bad Request: 'limit' must be a number");
+      });
+  });
+  test("200: Returns an empty array if page goes beyond number of articles", () => {
+    return request(app)
+      .get("/api/articles?p=1000")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(0);
+      });
+  });
+  test("200: Returns an empty array if limit is 0", () => {
+    return request(app)
+      .get("/api/articles?limit=0")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(0);
       });
   });
 });

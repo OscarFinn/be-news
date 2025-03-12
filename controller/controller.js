@@ -16,11 +16,11 @@ exports.getTopics = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  const { sort_by, order, topic } = req.query;
+  const { sort_by, order, topic, limit, p } = req.query;
 
   const promiseArr = [];
 
-  const fetchArticles = model.fetchArticles(sort_by, order, topic);
+  const fetchArticles = model.fetchArticles(limit, p, sort_by, order, topic);
   promiseArr.push(fetchArticles);
 
   if (topic) {

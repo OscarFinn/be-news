@@ -33,6 +33,8 @@ exports.fetchTopicBySlug = (slug) => {
 };
 
 exports.fetchArticles = (
+  limit = 10,
+  p = 1,
   sortBy = "created_at",
   order = "DESC",
   topic = undefined
@@ -45,6 +47,21 @@ exports.fetchArticles = (
     "created_at",
     "votes",
   ];
+
+  if (isNaN(limit)) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request: 'limit' must be a number",
+    });
+  }
+
+  if (isNaN(p)) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request: 'p' must be a number",
+    });
+  }
+
   const orderGreenlist = ["ASC", "DESC"];
 
   let queryStr = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comment_id)::int AS comment_count
@@ -91,7 +108,7 @@ exports.fetchArticles = (
     });
   }
   return db.query(queryStr, queryArr).then(({ rows }) => {
-    return rows;
+    return rows.slice(limit * (p - 1), limit * p);
   });
 };
 

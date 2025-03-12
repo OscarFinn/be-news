@@ -21,7 +21,7 @@ I cannot confirm the code will run as expected on different versions.
 
 Clone the repository to a directory of your choice using git clone.
 
-Run the following after cloning:
+Run the following in the terminal from the project directory after cloning:
 
     npm install
 

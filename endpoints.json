@@ -160,5 +160,18 @@
       "comment_count": 0,
       "votes": 0
     }
+  },
+  "POST /api/topics": {
+    "description": "Adds a topic to the topics table",
+    "body": {
+      "slug": "Reasons to hire Oscar",
+      "description": "An important topic",
+      "img_url": "https://cdn.archjobs.co.uk/file/ArchJobs/article_images/employmentcontract-800px.jpg"
+    },
+    "exampleResponse": {
+      "slug": "Reasons to hire oscar",
+      "description": "An important topic",
+      "img_url": "https://cdn.archjobs.co.uk/file/ArchJobs/article_images/employmentcontract-800px.jpg"
+    }
   }
 }

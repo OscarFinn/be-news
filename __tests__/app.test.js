@@ -332,7 +332,7 @@ describe("GET /api/articles/:article_id", () => {
 describe("GET /api/articles/:article_id/comments", () => {
   test("200: responds with an array of comments when passed a valid article", () => {
     return request(app)
-      .get("/api/articles/1/comments")
+      .get("/api/articles/1/comments?limit=999")
       .expect(200)
       .then(({ body }) => {
         const comments = body.comments;
@@ -405,6 +405,41 @@ describe("GET /api/articles/:article_id/comments", () => {
         //ORDER BY created_at DESC means latest comments first
         expect(comments).toBeSortedBy("created_at", { descending: true });
       });
+  });
+  describe("Comment Pagination", () => {
+    test("200: Returned array is limited to length of limits query", () => {
+      return request(app)
+        .get("/api/articles/1/comments?limit=3")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments.length).toBe(3);
+        });
+    });
+    test("200: Returned array is the page selected by p query", () => {
+      return request(app)
+        .get("/api/articles/1/comments?p=2")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          //total comments is 11, default limit is 10, so there will be one comment on page 2
+          expect(comments.length).toBe(1);
+        });
+    });
+    test("400: Returns a bad request error when limit is NaN", () => {
+      return request(app)
+        .get("/api/articles/1/comments?limit=sixplease")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request: 'limit' must be a number");
+        });
+    });
+    test("400: Returns a bad request error when p is NaN", () => {
+      return request(app)
+        .get("/api/articles/1/comments?p=invalid")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request: 'p' must be a number");
+        });
+    });
   });
 });
 

@@ -54,8 +54,9 @@ exports.getArticleById = (req, res, next) => {
 
 exports.getCommentsByArticle = (req, res, next) => {
   const articleId = req.params.article_id;
+  const { limit, p } = req.query;
   const checkExists = model.fetchArticle(articleId);
-  const getComments = model.fetchCommentsByArticle(articleId);
+  const getComments = model.fetchCommentsByArticle(articleId, limit, p);
 
   Promise.all([checkExists, getComments])
     .then(([exists, comments]) => {
@@ -63,7 +64,6 @@ exports.getCommentsByArticle = (req, res, next) => {
     })
     .catch(next);
 };
-
 exports.postCommentToArticle = (req, res, next) => {
   const articleId = req.params.article_id;
   const { username, body } = req.body;

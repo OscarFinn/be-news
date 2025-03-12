@@ -139,8 +139,8 @@ exports.patchComment = (req,res,next) => {
     const updateComment = model.updateComment(commentId,inc_votes)
 
     Promise.all([updateComment,checkCommentExists])
-    .then(({[0]:comment}) => {
-        res.status(200).send({comment:comment})
+    .then(([comment]) => {
+        res.status(200).send({comment})
     })
     .catch(next)
 }

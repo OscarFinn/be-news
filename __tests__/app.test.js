@@ -610,4 +610,30 @@ describe("PATCH: /api/comments/:comment_id", () => {
       expect(msg).toBe('Bad request: no votes passed')
     })
   })
+  test("400: Returns a bad request error when passed an inc_votes that isnt a number", () => {
+    const input = {
+      inc_votes: "Add 4 votes please"
+    }
+    return request(app)
+    .patch('/api/comments/1')
+    .send(input)
+    .expect(400)
+    .then(({body}) => {
+      const msg = body.msg
+      expect(msg).toBe('Bad request: inc_votes must be a number')
+    })
+  })
+  test("400: Returns a bad request error when passed comment id isnt a number", () => {
+    const input = {
+      inc_votes: 16
+    }
+    return request(app)
+    .patch('/api/comments/four')
+    .send(input)
+    .expect(400)
+    .then(({body}) => {
+      const msg = body.msg
+      expect(msg).toBe('Bad request >:(')
+    })
+  })
 })

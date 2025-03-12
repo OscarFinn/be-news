@@ -168,6 +168,8 @@ exports.fetchUserByUsername = (username) => {
 exports.updateComment = (commentId, voteChange) => {
     if(!voteChange) {
         return Promise.reject({status:400, msg:"Bad request: no votes passed"})
+    } else if (typeof voteChange !== "number") {
+        return Promise.reject({status:400, msg: 'Bad request: inc_votes must be a number'})
     }
     return db.query(`
         UPDATE comments

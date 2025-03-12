@@ -33,6 +33,8 @@ app.post("/api/articles", ctrl.postArticle);
 
 app.post("/api/topics", ctrl.postTopic);
 
+app.delete("/api/articles/:article_id", ctrl.deleteArticle);
+
 app.use(errCtrl.handleCustomErrors);
 
 app.use(errCtrl.handlePSQLErrors);

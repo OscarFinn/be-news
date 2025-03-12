@@ -33,8 +33,9 @@ Create a .env.test file in the root of the project directory and add the line:
 
     PGDATABASE = nc_news_test
 
-To seed the development database use the command:
+To setup the dbs and seed the development database run the commands:
 
+    npm run setup-dbs
     npm run seed-dev
 
 To run the test db with jest use the command:

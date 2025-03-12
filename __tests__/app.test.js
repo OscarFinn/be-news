@@ -871,3 +871,65 @@ describe("POST: /api/articles", () => {
       });
   });
 });
+
+describe("POST: /api/topics", () => {
+  test("201: When passed a valid topic adds it to the db", () => {
+    const input = {
+      slug: "mitchsquared",
+      description: "for when a single mitch just isnt enough",
+    };
+    return request(app)
+      .post("/api/topics")
+      .send(input)
+      .expect(201)
+      .then(({ body: { topic } }) => {
+        expect(topic.slug).toBe("mitchsquared");
+        expect(topic.description).toBe(
+          "for when a single mitch just isnt enough"
+        );
+        expect(topic.img_url).toBe("");
+      });
+  });
+  test("400: Returns a bad request error when the topic already exists", () => {
+    const input = {
+      slug: "mitch",
+      description: "trying to add mitch again???",
+    };
+    return request(app)
+      .post("/api/topics")
+      .send(input)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(`Bad request: Key (slug)=(mitch) already exists.`);
+      });
+  });
+  test("400: Returns a bad request error when a topic value is of incorrect type", () => {
+    const input = {
+      slug: "descnotastring",
+      description: 4,
+    };
+    return request(app)
+      .post("/api/topics")
+      .send(input)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(
+          `Bad request: One of more necessary input values is of the incorrect type`
+        );
+      });
+  });
+  test("400: Returns a bad request error when topic is missing values", () => {
+    const input = {
+      slug: "missingDesc",
+    };
+    return request(app)
+      .post("/api/topics")
+      .send(input)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(
+          `Bad request: Missing one or more necessary input values`
+        );
+      });
+  });
+});

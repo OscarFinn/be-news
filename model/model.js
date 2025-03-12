@@ -11,7 +11,7 @@ exports.fetchTopics = () => {
   });
 };
 
-exports.fetchTopicsBySlug = (slug) => {
+exports.fetchTopicBySlug = (slug) => {
   if (typeof slug !== "string") {
     return Promise.reject({
       status: 400,

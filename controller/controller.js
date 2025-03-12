@@ -26,11 +26,11 @@ exports.getArticles = (req, res, next) => {
   if (topic) {
     if (Array.isArray(topic)) {
       for (let item of topic) {
-        const checkTopicExists = model.fetchTopicsBySlug(item);
+        const checkTopicExists = model.fetchTopicBySlug(item);
         promiseArr.push(checkTopicExists);
       }
     } else {
-      const checkTopicExists = model.fetchTopicsBySlug(topic);
+      const checkTopicExists = model.fetchTopicBySlug(topic);
       promiseArr.push(checkTopicExists);
     }
   }
@@ -151,7 +151,7 @@ exports.patchComment = (req, res, next) => {
 
 exports.postArticle = (req, res, next) => {
   const checkAuthorExists = model.fetchUser(req.body.author);
-  const checkTopicExists = model.fetchTopicsBySlug(req.body.topic);
+  const checkTopicExists = model.fetchTopicBySlug(req.body.topic);
 
   const insertArticle = model.insertArticle(req.body);
 

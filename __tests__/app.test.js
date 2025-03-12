@@ -600,33 +600,31 @@ describe("DELETE /api/comments/:comment_id", () => {
       .delete("/api/comments/7")
       .expect(204)
       .then(() => {
-        return request(app)
-          .get("/api/comments/7")
-          .expect(404)
-          .then(({ body }) => {
-            const msg = body.msg;
-            expect(msg).toBe("Comment not found");
-          });
-      });
-  });
-  test("404: Cannot delete a comment that does not exist", () => {
-    return request(app)
-      .delete("/api/comments/999")
-      .expect(404)
+        return request(app).get("/api/comments/7").expect(404);
+      })
       .then(({ body }) => {
         const msg = body.msg;
         expect(msg).toBe("Comment not found");
       });
   });
-  test("400: returns a bad request when passed an invalid comment id", () => {
-    return request(app)
-      .delete(`/api/comments/notthecommentid`)
-      .expect(400)
-      .then(({ body }) => {
-        const msg = body.msg;
-        expect(msg).toBe("Bad request >:(");
-      });
-  });
+});
+test("404: Cannot delete a comment that does not exist", () => {
+  return request(app)
+    .delete("/api/comments/999")
+    .expect(404)
+    .then(({ body }) => {
+      const msg = body.msg;
+      expect(msg).toBe("Comment not found");
+    });
+});
+test("400: returns a bad request when passed an invalid comment id", () => {
+  return request(app)
+    .delete(`/api/comments/notthecommentid`)
+    .expect(400)
+    .then(({ body }) => {
+      const msg = body.msg;
+      expect(msg).toBe("Bad request >:(");
+    });
 });
 
 describe("GET /api/users", () => {
@@ -930,6 +928,48 @@ describe("POST: /api/topics", () => {
         expect(msg).toBe(
           `Bad request: Missing one or more necessary input values`
         );
+      });
+  });
+});
+
+describe("DELETE: /api/articles/:article_id", () => {
+  test("204: Passed article is deleted", () => {
+    return request(app)
+      .delete("/api/articles/1")
+      .expect(204)
+      .then(() => {
+        return request(app).get("/api/articles/1").expect(404);
+      })
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Article not found");
+      });
+  });
+  test("204: Passed articles comments are also deleted", () => {
+    return request(app)
+      .delete("/api/articles/3")
+      .expect(204)
+      .then(() => {
+        //comment_id 10 is posted on article 3
+        return request(app).get("/api/comments/10").expect(404);
+      })
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Comment not found");
+      });
+  });
+  test("400: Returns a bad request when passed an invalid article id", () => {
+    return request(app)
+      .delete("/api/articles/word")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request >:(");
+      });
+  });
+  test("404: Returns an article not found when trying to delete a nonexistent article", () => {
+    return request(app)
+      .delete("/api/articles/999")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Article not found");
       });
   });
 });

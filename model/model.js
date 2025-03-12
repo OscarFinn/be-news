@@ -135,10 +135,12 @@ exports.fetchArticle = (id) => {
 
 exports.fetchCommentsByArticle = (id, limit = 10, p = 1) => {
   if (isNaN(limit)) {
-    return Promise.reject({
-      status: 400,
-      msg: "Bad Request: 'limit' must be a number",
-    });
+    if (limit !== "ALL") {
+      return Promise.reject({
+        status: 400,
+        msg: "Bad Request: 'limit' must be a number",
+      });
+    }
   }
   if (isNaN(p)) {
     return Promise.reject({
@@ -152,6 +154,9 @@ exports.fetchCommentsByArticle = (id, limit = 10, p = 1) => {
       [id]
     )
     .then(({ rows }) => {
+      if (limit === "ALL") {
+        limit = rows.length;
+      }
       const paginatedComments = rows.slice(limit * (p - 1), limit * p);
       return paginatedComments;
     });
@@ -319,4 +324,8 @@ exports.insertTopic = ({ slug, description, img_url = "" }) => {
       [slug, description, img_url]
     )
     .then(({ rows }) => rows[0]);
+};
+
+exports.removeArticle = (id) => {
+  return db.query("DELETE FROM articles WHERE article_id = $1", [id]);
 };

@@ -246,6 +246,15 @@ describe("GET /api/articles", () => {
         expect(articles.length).toBe(0);
       });
   });
+  test("200: Returns a total count property", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles, total_count } }) => {
+        expect(articles.length).toBe(10);
+        expect(total_count).toBe(13);
+      });
+  });
 });
 
 describe("GET /api/articles/:article_id", () => {

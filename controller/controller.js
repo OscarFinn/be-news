@@ -36,8 +36,8 @@ exports.getArticles = (req, res, next) => {
   }
 
   Promise.all(promiseArr)
-    .then(([articles]) => {
-      res.status(200).send({ articles: articles });
+    .then(([{ articles, total_count }]) => {
+      res.status(200).send({ articles, total_count });
     })
     .catch(next);
 };

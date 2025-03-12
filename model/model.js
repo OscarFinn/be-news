@@ -108,7 +108,9 @@ exports.fetchArticles = (
     });
   }
   return db.query(queryStr, queryArr).then(({ rows }) => {
-    return rows.slice(limit * (p - 1), limit * p);
+    const totalArticles = rows.length;
+    const paginatedArticles = rows.slice(limit * (p - 1), limit * p);
+    return { articles: paginatedArticles, total_count: totalArticles };
   });
 };
 

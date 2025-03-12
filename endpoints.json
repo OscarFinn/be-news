@@ -65,15 +65,14 @@
       "body": "This is an example of a new comment"
     },
     "exampleResponse": {
-        "comment": 
-          {
-            "comment_id": 1,
-            "article_id": 1,
-            "body": "This is an example of a new comment",
-            "author": "exampleOscar",
-            "created_at": "2020-08-03T14:14:00.000Z",
-            "votes": 0
-          }
+      "comment": {
+        "comment_id": 1,
+        "article_id": 1,
+        "body": "This is an example of a new comment",
+        "author": "exampleOscar",
+        "created_at": "2020-08-03T14:14:00.000Z",
+        "votes": 0
+      }
     }
   },
   "PATCH /api/articles/:article_id": {
@@ -82,17 +81,16 @@
       "inc_votes": 6
     },
     "exampleResponse": {
-        "article": 
-          {
-            "title": "Seafood substitutions are increasing",
-            "topic": "cooking",
-            "author": "weegembump",
-            "body": "Text from the article..",
-            "created_at": "2018-05-30T15:59:13.341Z",
-            "votes": 6,
-            "comment_count": 6
-          }
+      "article": {
+        "title": "Seafood substitutions are increasing",
+        "topic": "cooking",
+        "author": "weegembump",
+        "body": "Text from the article..",
+        "created_at": "2018-05-30T15:59:13.341Z",
+        "votes": 6,
+        "comment_count": 6
       }
+    }
   },
   "DELETE /api/comments/:comment_id": {
     "description": "Removes the comment denoted by the given comment id",
@@ -101,10 +99,9 @@
   "GET /api/comments/:comment_id": {
     "description": "Fetches the comment denoted by the given comment id",
     "exampleResponse": {
-      "comment":
-      {
-        "comment_id":12,
-        "article_id":4,
+      "comment": {
+        "comment_id": 12,
+        "article_id": 4,
         "body": "Goku is much stronger than Luffy",
         "votes": 9001,
         "author": "PwrLvlArbiter",
@@ -141,8 +138,27 @@
       "body": "They really should not have rushed the ending of game of thrones",
       "votes": 1001,
       "author": "meMyselfandI",
-      "created_at":"2020-01-30T12:42:13.341Z"
+      "created_at": "2020-01-30T12:42:13.341Z"
+    }
+  },
+  "POST /api/articles": {
+    "description": "Adds an article to the articles table",
+    "body": {
+      "title": "Why you should hire Oscar",
+      "author": "DefinitelityNotOscar",
+      "body": "Hes good at coding, works hard, works fast",
+      "topic": "hireme",
+      "article_img_url": "https://t4.ftcdn.net/jpg/02/20/95/07/360_F_220950772_ewKiVCUs9QQWeUUfRCGlEndhU1RRmX8H.jpg"
+    },
+    "exampleResponse": {
+      "article_id": 29,
+      "title": "Why you should hire Oscar",
+      "author": "DefinitelityNotOscar",
+      "body": "Hes good at coding, works hard, works fast",
+      "topic": "hireme",
+      "article_img_url": "https://t4.ftcdn.net/jpg/02/20/95/07/360_F_220950772_ewKiVCUs9QQWeUUfRCGlEndhU1RRmX8H.jpg",
+      "comment_count": 0,
+      "votes": 0
     }
   }
-  
 }

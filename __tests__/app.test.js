@@ -255,6 +255,14 @@ describe("GET /api/articles", () => {
         expect(total_count).toBe(13);
       });
   });
+  test("200: total count is adjusted when queries filter the results", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body: { total_count } }) => {
+        expect(total_count).toBe(1);
+      });
+  });
 });
 
 describe("GET /api/articles/:article_id", () => {

@@ -29,6 +29,8 @@ app.get("/api/users", ctrl.getUsers);
 
 app.get("/api/users/:username", ctrl.getUserByUsername);
 
+app.post("/api/articles", ctrl.postArticle);
+
 app.use(errCtrl.handleCustomErrors);
 
 app.use(errCtrl.handlePSQLErrors);

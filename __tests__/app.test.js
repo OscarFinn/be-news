@@ -80,7 +80,7 @@ describe("GET /api/articles", () => {
       .then(({ body }) => {
         const articles = body.articles;
         articles.forEach((article) => {
-          expect(typeof article.number_of_comments).toBe("number");
+          expect(typeof article.comment_count).toBe("number");
         });
       });
   });
@@ -231,6 +231,15 @@ describe("GET /api/articles/:article_id", () => {
 
         expect(article.title).toBe("Am I a cat?");
         expect(new Date(article.created_at).toString()).toBe(date.toString());
+      });
+  });
+  test("200: Article has a comment_count set to the number of comments associated with it", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body }) => {
+        const article = body.article;
+        expect(article.comment_count).toBe(11);
       });
   });
   test("404: responds with a not found message if the article id does not exist", () => {
@@ -410,7 +419,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(404)
       .then(({ body }) => {
         const msg = body.msg;
-        expect(msg).toBe("User not found");
+        expect(msg).toBe("User 'oscarisnotinthisdb' not found");
       });
   });
 });
@@ -555,7 +564,7 @@ describe("GET /api/users/:username", () => {
       .expect(404)
       .then(({ body }) => {
         const msg = body.msg;
-        expect(msg).toBe("User not found");
+        expect(msg).toBe("User 'bingus' not found");
       });
   });
   test("400: Returns a 400 when an invalid username is passed", () => {
@@ -645,6 +654,118 @@ describe("PATCH: /api/comments/:comment_id", () => {
       .then(({ body }) => {
         const msg = body.msg;
         expect(msg).toBe("Bad request >:(");
+      });
+  });
+});
+
+describe("POST: /api/articles", () => {
+  test("201: Posts the given article", () => {
+    const input = {
+      title: "Test",
+      author: "rogersop",
+      body: "lorem ipsum",
+      topic: "paper",
+      article_img_url:
+        "https://t4.ftcdn.net/jpg/02/20/95/07/360_F_220950772_ewKiVCUs9QQWeUUfRCGlEndhU1RRmX8H.jpg",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(input)
+      .expect(201)
+      .then(({ body: { article } }) => {
+        expect(article.title).toBe("Test");
+        expect(article.author).toBe("rogersop");
+        expect(article.body).toBe("lorem ipsum");
+        expect(article.topic).toBe("paper");
+        expect(article.article_img_url).toBe(
+          "https://t4.ftcdn.net/jpg/02/20/95/07/360_F_220950772_ewKiVCUs9QQWeUUfRCGlEndhU1RRmX8H.jpg"
+        );
+        expect(article.votes).toBe(0);
+        expect(article.article_id).toBe(14);
+        expect(article.comment_count).toBe(0);
+        expect(typeof article.created_at).toBe("string");
+      });
+  });
+  test("201: Article is posted with a default img_url if not provided", () => {
+    const input = {
+      title: "Test",
+      author: "rogersop",
+      body: "lorem ipsum",
+      topic: "paper",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(input)
+      .expect(201)
+      .then(({ body: { article } }) => {
+        expect(article.article_img_url).toBe(
+          "https://yt3.googleusercontent.com/ytc/AIdro_neeCM9My-5KsXa2Y5r7MtxRmUoV2On0UK3EmkUucJpTt0=s900-c-k-c0x00ffffff-no-rj"
+        );
+      });
+  });
+  test("400: Returns a bad request when missing necessary input data", () => {
+    const input = {
+      title: "Test",
+      author: "rogersop",
+      topic: "paper",
+      article_img_url:
+        "https://t4.ftcdn.net/jpg/02/20/95/07/360_F_220950772_ewKiVCUs9QQWeUUfRCGlEndhU1RRmX8H.jpg",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(input)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(
+          "Bad request: Missing one or more necessary input values"
+        );
+      });
+  });
+  test("400: Returns a bad request if input data is of incorrect type", () => {
+    const input = {
+      title: "Test",
+      author: "rogersop",
+      topic: 1,
+      body: "topic is of wrong type",
+      article_img_url:
+        "https://t4.ftcdn.net/jpg/02/20/95/07/360_F_220950772_ewKiVCUs9QQWeUUfRCGlEndhU1RRmX8H.jpg",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(input)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request: topic must be of type 'string'");
+      });
+  });
+  test("404: Returns a 404 user not found if the author is not present in the db", () => {
+    const input = {
+      title: "Test",
+      author: "oscar",
+      topic: "paper",
+      body: "oscar is not present",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(input)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("User 'oscar' not found");
+      });
+  });
+  test("404: Returns a 404 topic not found if the topic is not present in the db", () => {
+    const input = {
+      title: "Test",
+      author: "rogersop",
+      topic: "notmitch",
+      body: "all topics are mitch, not mitch topics dont exist",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(input)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("The topic 'notmitch' does not exist");
       });
   });
 });

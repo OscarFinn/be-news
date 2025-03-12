@@ -126,7 +126,7 @@ function createArticles() {
     body TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     votes INT DEFAULT 0,
-    article_img_url VARCHAR(1000) NOT NULL
+    article_img_url VARCHAR(1000) DEFAULT 'https://yt3.googleusercontent.com/ytc/AIdro_neeCM9My-5KsXa2Y5r7MtxRmUoV2On0UK3EmkUucJpTt0=s900-c-k-c0x00ffffff-no-rj'
     );`);
 }
 function createComments() {

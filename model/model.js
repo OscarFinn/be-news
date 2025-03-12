@@ -12,6 +12,12 @@ exports.fetchTopics = () => {
 };
 
 exports.fetchTopicsBySlug = (slug) => {
+  if (typeof slug !== "string") {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad request: topic must be of type 'string'",
+    });
+  }
   return db
     .query(`SELECT * FROM topics WHERE slug = $1`, [slug])
     .then(({ rows }) => {
@@ -41,7 +47,7 @@ exports.fetchArticles = (
   ];
   const orderGreenlist = ["ASC", "DESC"];
 
-  let queryStr = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comment_id)::int AS number_of_comments
+  let queryStr = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comment_id)::int AS comment_count
         FROM articles
         LEFT JOIN comments
         ON articles.article_id = comments.article_id
@@ -91,7 +97,15 @@ exports.fetchArticles = (
 
 exports.fetchArticle = (id) => {
   return db
-    .query(`SELECT * FROM articles WHERE article_id = $1`, [id])
+    .query(
+      ` SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, articles.body, COUNT(comments.comment_id)::int AS comment_count
+        FROM articles 
+        LEFT JOIN comments
+        USING (article_id)
+        WHERE article_id = $1
+        GROUP BY articles.article_id`,
+      [id]
+    )
     .then(({ rows }) => {
       if (rows.length === 0) {
         return Promise.reject({ status: 404, msg: "Article not found" });
@@ -124,23 +138,6 @@ exports.insertComment = (articleId, username, body) => {
     )
     .then(({ rows }) => {
       return rows[0];
-    });
-};
-
-exports.fetchUser = (username) => {
-  return db
-    .query(
-      `
-        SELECT * FROM users
-        WHERE username = $1`,
-      [username]
-    )
-    .then(({ rows }) => {
-      if (rows.length === 0) {
-        return Promise.reject({ status: 404, msg: "User not found" });
-      } else {
-        return rows[0];
-      }
     });
 };
 
@@ -181,18 +178,27 @@ exports.fetchUsers = () => {
   return db.query(`SELECT * FROM users`).then(({ rows }) => rows);
 };
 
-exports.fetchUserByUsername = (username) => {
+exports.fetchUser = (username) => {
   if (username.length > 32) {
     return Promise.reject({
       status: 400,
       msg: "Bad request: Invalid username",
     });
   }
+  if (typeof username !== "string") {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad request: Username must be of type 'string'",
+    });
+  }
   return db
     .query(`SELECT * FROM users WHERE username = $1`, [username])
     .then(({ rows }) => {
       if (rows.length === 0) {
-        return Promise.reject({ status: 404, msg: "User not found" });
+        return Promise.reject({
+          status: 404,
+          msg: `User '${username}' not found`,
+        });
       } else {
         return rows[0];
       }
@@ -215,6 +221,43 @@ exports.updateComment = (commentId, voteChange) => {
         WHERE comment_id = $2
         RETURNING *`,
       [voteChange, commentId]
+    )
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};
+
+exports.insertArticle = (inputArticle) => {
+  const { title, author, body, topic, article_img_url } = inputArticle;
+
+  if (!title || !author || !body || !topic) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad request: Missing one or more necessary input values",
+    });
+  }
+  //not pretty, should refactor
+  let columnStr = "";
+  let valuesStr = "";
+  const inputArr = [];
+  if (article_img_url) {
+    columnStr = "(title, author, body, topic, article_img_url)";
+    valuesStr = "($1, $2, $3, $4, $5)";
+    inputArr.push(title, author, body, topic, article_img_url);
+  } else {
+    columnStr = "(title, author, body, topic)";
+    valuesStr = "($1, $2, $3, $4)";
+    inputArr.push(title, author, body, topic);
+  }
+
+  return db
+    .query(
+      `INSERT INTO articles
+      ${columnStr}
+      VALUES
+      ${valuesStr}
+      RETURNING article_id`,
+      inputArr
     )
     .then(({ rows }) => {
       return rows[0];

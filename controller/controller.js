@@ -128,7 +128,7 @@ exports.getUsers = (req, res, next) => {
 exports.getUserByUsername = (req, res, next) => {
   const username = req.params.username;
   model
-    .fetchUserByUsername(username)
+    .fetchUser(username)
     .then((user) => {
       res.status(200).send({ user: user });
     })
@@ -145,6 +145,22 @@ exports.patchComment = (req, res, next) => {
   Promise.all([updateComment, checkCommentExists])
     .then(([comment]) => {
       res.status(200).send({ comment });
+    })
+    .catch(next);
+};
+
+exports.postArticle = (req, res, next) => {
+  const checkAuthorExists = model.fetchUser(req.body.author);
+  const checkTopicExists = model.fetchTopicsBySlug(req.body.topic);
+
+  const insertArticle = model.insertArticle(req.body);
+
+  Promise.all([insertArticle, checkAuthorExists, checkTopicExists])
+    .then(([article]) => {
+      return model.fetchArticle(article.article_id);
+    })
+    .then((article) => {
+      res.status(201).send({ article });
     })
     .catch(next);
 };

@@ -10,13 +10,14 @@ Explore the db online:
 
 Expect to receive a '502 Bad Gateway' error on first clicking this link as it will take some time to come online. Refresh the link after a few minutes have passed.
 
-
 ## INITIAL SETUP
 
-In order to run this project on your local machine you must have installed:
+The project was built using the following:
 
-    node >= 0.12.0
-    postgres >= [SOME_VERSION_NO]
+    node: 23.2.0
+    postgres: 17.0
+
+I cannot confirm the code will run as expected on different versions.
 
 Clone the repository to a directory of your choice using git clone.
 

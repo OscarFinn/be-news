@@ -164,3 +164,13 @@ exports.postArticle = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.postTopic = (req, res, next) => {
+  const body = req.body;
+  model
+    .insertTopic(body)
+    .then((topic) => {
+      res.status(201).send({ topic });
+    })
+    .catch(next);
+};

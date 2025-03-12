@@ -282,3 +282,28 @@ exports.insertArticle = (inputArticle) => {
       return rows[0];
     });
 };
+
+exports.insertTopic = ({ slug, description, img_url = "" }) => {
+  if (!slug || !description) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad request: Missing one or more necessary input values",
+    });
+  }
+  if (typeof slug !== "string" || typeof description !== "string") {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad request: One of more necessary input values is of the incorrect type",
+    });
+  }
+  return db
+    .query(
+      `INSERT INTO topics
+    (slug,description,img_url)
+    VALUES
+    ($1,$2,$3)
+    RETURNING *`,
+      [slug, description, img_url]
+    )
+    .then(({ rows }) => rows[0]);
+};

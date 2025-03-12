@@ -22,5 +22,10 @@ exports.handlePSQLErrors = (err, req, res, next) => {
       msg: "Bad request: one or more input values is of incorrect type",
     });
   }
+  if (err.code === "23505") {
+    res.status(400).send({
+      msg: `Bad request: ${err.detail}`,
+    });
+  }
   next(err);
 };

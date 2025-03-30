@@ -109,6 +109,20 @@
       }
     }
   },
+  "PATCH /api/comments/:comment_id": {
+    "description": "Updates the given comments votes",
+    "body": {
+      "inc_votes": 1000
+    },
+    "exampleResponse": {
+      "comment_id": 10,
+      "article_id": 5,
+      "body": "They really should not have rushed the ending of game of thrones",
+      "votes": 1001,
+      "author": "meMyselfandI",
+      "created_at": "2020-01-30T12:42:13.341Z"
+    }
+  },
   "GET /api/users": {
     "description": "Fetches the array of users from the database",
     "exampleResponse": [
@@ -125,20 +139,6 @@
       "username": "datboi",
       "name": "Tim",
       "avatar_url": "https://upload.wikimedia.org/wikipedia/en/f/f9/Dat_Boi_%28resized_50%25%29.jpg"
-    }
-  },
-  "PATCH /api/comments/:comment_id": {
-    "description": "Updates the given comments votes",
-    "body": {
-      "inc_votes": 1000
-    },
-    "exampleResponse": {
-      "comment_id": 10,
-      "article_id": 5,
-      "body": "They really should not have rushed the ending of game of thrones",
-      "votes": 1001,
-      "author": "meMyselfandI",
-      "created_at": "2020-01-30T12:42:13.341Z"
     }
   },
   "POST /api/articles": {

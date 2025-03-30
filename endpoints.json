@@ -173,5 +173,9 @@
       "description": "An important topic",
       "img_url": "https://cdn.archjobs.co.uk/file/ArchJobs/article_images/employmentcontract-800px.jpg"
     }
+  },
+  "DELETE /api/articles/:article_id": {
+    "description": "Deletes the article and any comments associated with it",
+    "exampleResponse": {}
   }
 }

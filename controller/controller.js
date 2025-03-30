@@ -182,3 +182,23 @@ exports.postTopic = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.deleteArticle = (req, res, next) => {
+  const { article_id } = req.params;
+  const checkArticleExists = model.fetchArticle(article_id);
+  const deleteArticle = model
+    .fetchCommentsByArticle(article_id, "ALL")
+    .then((comments) => {
+      comments.forEach(({ comment_id }) => {
+        model.removeComment(comment_id);
+      });
+    })
+    .then(() => {
+      return model.removeArticle(article_id);
+    });
+  Promise.all([deleteArticle, checkArticleExists])
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch(next);
+};

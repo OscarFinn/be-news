@@ -13,5 +13,6 @@ articlesRouter.post("/:article_id/comments", ctrl.postCommentToArticle);
 articlesRouter.patch("/:article_id", ctrl.patchArticle);
 
 articlesRouter.post("/", ctrl.postArticle);
+articlesRouter.delete("/:article_id", ctrl.deleteArticle);
 
 module.exports = articlesRouter;

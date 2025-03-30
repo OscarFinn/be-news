@@ -107,10 +107,11 @@ exports.fetchArticles = (
       msg: `Bad request: Cannot order by '${order}'`,
     });
   }
+
+  queryStr += ` LIMIT ${limit} OFFSET ${(p - 1) * limit}`;
+
   return db.query(queryStr, queryArr).then(({ rows }) => {
-    const totalArticles = rows.length;
-    const paginatedArticles = rows.slice(limit * (p - 1), limit * p);
-    return { articles: paginatedArticles, total_count: totalArticles };
+    return { articles: rows };
   });
 };
 
@@ -148,12 +149,13 @@ exports.fetchCommentsByArticle = (id, limit = 10, p = 1) => {
   }
   return db
     .query(
-      `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC`,
+      `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC  LIMIT ${limit} OFFSET ${
+        (p - 1) * limit
+      }`,
       [id]
     )
     .then(({ rows }) => {
-      const paginatedComments = rows.slice(limit * (p - 1), limit * p);
-      return paginatedComments;
+      return rows;
     });
 };
 
@@ -319,4 +321,22 @@ exports.insertTopic = ({ slug, description, img_url = "" }) => {
       [slug, description, img_url]
     )
     .then(({ rows }) => rows[0]);
+};
+
+exports.fetchCount = (table, topics = []) => {
+  let queryStr = `SELECT COUNT(*)::int AS total_count FROM ${table}`;
+  const queryArr = [];
+  if (topics.length > 0) {
+    let whereStr = " WHERE ";
+    const whereArr = [];
+    for (let i = 0; i < topics.length; i++) {
+      whereArr.push(`topic = $${i + 1}`);
+      queryArr.push(topics[i]);
+    }
+    whereStr += whereArr.join(" OR ");
+    queryStr += whereStr;
+  }
+  return db.query(queryStr, queryArr).then(({ rows }) => {
+    return rows[0];
+  });
 };

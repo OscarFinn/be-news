@@ -21,22 +21,30 @@ exports.getArticles = (req, res, next) => {
   const promiseArr = [];
 
   const fetchArticles = model.fetchArticles(limit, p, sort_by, order, topic);
+
   promiseArr.push(fetchArticles);
 
   if (topic) {
     if (Array.isArray(topic)) {
+      const getCount = model.fetchCount("articles", topic);
+      promiseArr.push(getCount);
       for (let item of topic) {
         const checkTopicExists = model.fetchTopicBySlug(item);
         promiseArr.push(checkTopicExists);
       }
     } else {
       const checkTopicExists = model.fetchTopicBySlug(topic);
+      const getCount = model.fetchCount("articles", [topic]);
+      promiseArr.push(getCount);
       promiseArr.push(checkTopicExists);
     }
+  } else {
+    const getCount = model.fetchCount("articles");
+    promiseArr.push(getCount);
   }
 
   Promise.all(promiseArr)
-    .then(([{ articles, total_count }]) => {
+    .then(([{ articles }, { total_count }]) => {
       res.status(200).send({ articles, total_count });
     })
     .catch(next);

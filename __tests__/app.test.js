@@ -168,6 +168,15 @@ describe("GET /api/articles", () => {
         expect(articles).toBeSortedBy("topic", { descending: true });
       });
   });
+  test("200: returned articles are sorted by comment_count", () => {
+    return request(app)
+      .get("/api/articles?sort_by=comment_count")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        expect(articles).toBeSortedBy("comment_count", { descending: true });
+      });
+  });
   test("200: returned articles are sorted by given order", () => {
     return request(app)
       .get("/api/articles?order=asc")

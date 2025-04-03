@@ -46,6 +46,7 @@ exports.fetchArticles = (
     "author",
     "created_at",
     "votes",
+    "comment_count",
   ];
 
   if (isNaN(limit)) {
